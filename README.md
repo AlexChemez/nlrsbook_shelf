@@ -1,3 +1,3 @@
 # nlrsbook_shelf
 
-Блок "Моя полка НБ РС(Я)" для LMS Moodle
+Блок "Полка НБ РС(Я)" для LMS Moodle
