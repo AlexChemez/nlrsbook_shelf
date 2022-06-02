@@ -1,0 +1,10 @@
+<div>
+    <div class="mb-3">
+        <a href="https://new.nlrs.ru/lk/shelf" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Моя полка</a>
+        <a href="https://new.nlrs.ru/lk/orders-shelf" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Мои заказы</a>
+        <a href="https://new.nlrs.ru/lk/tickets" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Задать вопрос</a>
+    </div>
+    <h4 class="mb-3">Моя полка</h4>
+    <div class="nlrsbook_shelf_grid row" id="nlrsbook_shelf_list">
+    </div>
+</div>
