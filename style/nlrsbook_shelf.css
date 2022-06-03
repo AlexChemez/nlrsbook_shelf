@@ -3,7 +3,7 @@
 }*/
 
 .nlrsbook_shelf_card {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 .nlrsbook_shelf_card__img {
     background-color: #dedede;
@@ -39,10 +39,10 @@
     font-size: 12px;
 }
 
-.page-item {
+.nlrsbook_shelf_pagination > ul > .page-item {
     cursor: pointer;
 }
-.page-item.disabled, .page-item.active {
+.nlrsbook_shelf_pagination > ul > .page-item.disabled, .nlrsbook_shelf_pagination > ul > .page-item.active {
     cursor: default;
 }
 .nlrsbook_shelf_pagination > ul {
