@@ -5,16 +5,16 @@ require_once('../../config.php');
 require_login();
 $page = optional_param('page', 1, PARAM_INT);
 
-$url = file_get_contents('https://jsonplaceholder.typicode.com/photos?albumId='.$page);
+$url = file_get_contents('https://jsonplaceholder.typicode.com/posts?userId='.$page);
 $array = json_decode($url, true);
-$count = 5000;
+$count = 100;
 
 /*$orgToken = get_config('nlrsbook_shelf', 'org_token');*/
 
 $content .= pagination($count, $page);
 foreach ($array as $key => $value) {
-  $content .= "<div class=\"nlrsbook_shelf_card col-6 col-sm-4 col-md-2\" data-id=\"" . $book['id'] . "\">
-                    <img src=\"" . $value['thumbnailUrl'] . "\" class=\"nlrsbook_shelf_card__img\">
+    $content .= "<div class=\"nlrsbook_shelf_card col-6 col-sm-4 col-md-2\" data-id=\"" . $book['id'] . "\">
+                    <img src=\"https://via.placeholder.com/200x280/dedede\" class=\"nlrsbook_shelf_card__img\">
                     <a href=\"" . $value['url'] . "\" target=\"_blank\" class=\"nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-1\">Читать</a>
                     <div class=\"nlrsbook_shelf_card__title mt-1\">" . $value['title'] . "</div>
                     <div class=\"nlrsbook_shelf_card__author mt-1\">" . $value['title'] . "</div>
@@ -25,7 +25,7 @@ $content .= pagination($count, $page);
 function pagination($count, $page)
 {
     $output .= "<div class=\"nlrsbook_shelf_pagination col-12\"><ul class=\"pagination pagination-sm\">";
-    $pages = ceil($count / 50);
+    $pages = ceil($count / 10);
 
     if ($pages > 1) {
 
