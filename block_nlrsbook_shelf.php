@@ -18,7 +18,7 @@ class block_nlrsbook_shelf extends block_base {
 
         $this->content = new stdClass;
         $this->content->text .= "<style>" . $style . "</style>";
-        $this->content->text .= "<script src=\"https://code.jquery.com/jquery-1.9.1.min.js\"></script>";
+        $this->content->text .= "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js\"></script>";
         $this->content->text .= $mainPage;
         $this->content->text .= "<script type=\"text/javascript\"> " . $js . " </script>";
 

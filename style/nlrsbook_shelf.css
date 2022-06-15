@@ -5,12 +5,45 @@
 .nlrsbook_shelf_card {
     margin-bottom: 15px;
 }
-.nlrsbook_shelf_card__img {
-    background-color: #dedede;
-    border-radius: 4px;
-    border: 0px solid ;
-    width: 100%;
+
+.nlrsbook_shelf_card__img_wrapper {
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    margin: 0px;
 }
+.nlrsbook_shelf_card__img_responsive {
+    display: block;
+    box-sizing: border-box;
+    padding-top: 150%;
+}
+.nlrsbook_shelf_card__img {
+    position: absolute;
+    inset: 0px;
+    box-sizing: border-box;
+    padding: 0px;
+    border: none;
+    margin: auto;
+    display: block;
+    width: 0px;
+    height: 0px;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+.nlrsbook_shelf_card__dropdown {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 0px 6px;
+    background: rgba(255,255,255,0.5);
+}
+.nlrsbook_shelf_card__dropdown::after {
+    margin: 0px;
+}
+
 .nlrsbook_shelf_card__btn, .nlrsbook_shelf_card__btn:hover, .nlrsbook_shelf_card__btn:focus {
     outline: none;
 }
@@ -46,6 +79,5 @@
     cursor: default;
 }
 .nlrsbook_shelf_pagination > ul {
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 0px;
 }
