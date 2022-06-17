@@ -14,6 +14,10 @@ $page = optional_param('page', 1, PARAM_INT);
 $remove = optional_param('remove', null, PARAM_INT);
 $token = Query::getToken($user_id);
 
+$nlrsUserId = 48059; // TODO: получать из токена
+$seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
+$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
+
 $myShelf = Query::getShelf($page, $first, $token);
 
 $myShelfBooks = $myShelf['data'];
@@ -25,6 +29,7 @@ $count = $myShelfPagi['total'];
 
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
+    $bookUrl = "${baseUrl}&override_redirect=/online2/".$book['id'];
     $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2" data-id="' . $book['id'] . '">
                     <div class="nlrsbook_shelf_card__img_wrapper">
                         <div class="nlrsbook_shelf_card__img_responsive"></div>
@@ -35,7 +40,7 @@ foreach ($myShelfBooks as $key => $book) {
                             <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item">Убрать из полки</a></li>
                         </ul>
                     </div>
-                    <a target="_blank" href="https://new.nlrs.ru/online2/'.$book['id'].'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
+                    <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
                     <div class="nlrsbook_shelf_card__title mt-1">'.$book['title'].'</div>
                 </div>';
 }
