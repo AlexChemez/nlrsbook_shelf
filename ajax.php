@@ -9,17 +9,9 @@ require_once($CFG->dirroot . "/blocks/nlrsbook_auth/Query.php");
 
 use App\Querys\Query;
 
-<<<<<<< HEAD
 $first = 6; // Количество книг на страницу
 $page = optional_param('page', 1, PARAM_INT); // get запрос на получение номера страницы для пагинатора
 $remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки
-=======
-$nlrsUserId = 48059; // TODO: получать из токена
-$seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
-$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
-
-$myShelf = Query::getShelf($page, $first, $token);
->>>>>>> origin/main
 
 $user_id = $USER->id; // Идентицикатор пользователя
 $public_key = get_config('nlrsbook_shelf', 'org_private_key'); // Приватный ключ организации
@@ -42,11 +34,7 @@ $removeBook = Query::removeBookToShelf($remove, $getToken);
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
     $bookUrl = "${baseUrl}&override_redirect=/online2/".$book['id'];
-<<<<<<< HEAD
     $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2">
-=======
-    $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2" data-id="' . $book['id'] . '">
->>>>>>> origin/main
                     <div class="nlrsbook_shelf_card__img_wrapper">
                         <div class="nlrsbook_shelf_card__img_responsive"></div>
                         <img src="'.$book['cover_thumb_url'].'" class="nlrsbook_shelf_card__img">

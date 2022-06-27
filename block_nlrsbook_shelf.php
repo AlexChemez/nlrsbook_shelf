@@ -38,11 +38,7 @@ class block_nlrsbook_shelf extends block_base {
                     <a href="{$ordersShelfUrl}" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Мои заказы</a>
                     <a href="{$ticketsUrl}" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Задать вопрос</a>
                 </div>
-<<<<<<< HEAD
                 <h4 class="mb-3">Моя полка <span id="nlrsbook_shelf_count"></span></h4>
-=======
-                <h4 class="mb-3">Моя полка</h4>
->>>>>>> origin/main
                 <div class="nlrsbook_shelf_grid row" id="nlrsbook_shelf_list">
                 </div>
             </div>
