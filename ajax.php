@@ -1,31 +1,40 @@
 <?php
-require(__DIR__ . '/Query.php');
-use App\Services\Query;
 
 define('AJAX_SCRIPT', true);
 require_once('../../config.php');
 
 require_login();
 
-$user_id = $USER->id;
+require_once($CFG->dirroot . "/blocks/nlrsbook_auth/Query.php");
 
-$first = 6;
-$page = optional_param('page', 1, PARAM_INT);
-$remove = optional_param('remove', null, PARAM_INT);
-$token = Query::getToken($user_id);
+use App\Querys\Query;
 
-$myShelf = Query::getShelf($page, $first, $token);
+$first = 6; // Количество книг на страницу
+$page = optional_param('page', 1, PARAM_INT); // get запрос на получение номера страницы для пагинатора
+$remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки
 
-$myShelfBooks = $myShelf['data'];
-$myShelfPagi = $myShelf['paginatorInfo'];
+$user_id = $USER->id; // Идентицикатор пользователя
+$public_key = get_config('nlrsbook_shelf', 'org_private_key'); // Приватный ключ организации
+$org_id = 1; // Идентификатор организации
 
-$removeBook = Query::removeBookToShelf($remove, $token);
+$getSignature = Query::generateServerApiRequestSignatureBase64($public_key, 2, $user_id); // получение подписи
+$getToken = Query::getToken($user_id, $getSignature); // получение токена пользователя
 
-$count = $myShelfPagi['total'];
+$nlrsUserId = 48059; // TODO: получать из токена
+$seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
+$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
+
+$getShelf = Query::getShelf($page, $first, $getToken); // получение полки пользователя
+
+$myShelfBooks = $getShelf['data'];
+$count = $getShelf['paginatorInfo']['total'];
+
+$removeBook = Query::removeBookToShelf($remove, $getToken);
 
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
-    $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2" data-id="' . $book['id'] . '">
+    $bookUrl = "${baseUrl}&override_redirect=/online2/".$book['id'];
+    $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2">
                     <div class="nlrsbook_shelf_card__img_wrapper">
                         <div class="nlrsbook_shelf_card__img_responsive"></div>
                         <img src="'.$book['cover_thumb_url'].'" class="nlrsbook_shelf_card__img">
@@ -35,7 +44,7 @@ foreach ($myShelfBooks as $key => $book) {
                             <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item">Убрать из полки</a></li>
                         </ul>
                     </div>
-                    <a target="_blank" href="https://new.nlrs.ru/online2/'.$book['id'].'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
+                    <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
                     <div class="nlrsbook_shelf_card__title mt-1">'.$book['title'].'</div>
                 </div>';
 }
@@ -78,16 +87,17 @@ function pagination($count, $first, $page)
             $output .= "<li class=\"page-item disabled\"><span class=\"page-link nlrsbook-page\">...</span></li>";
         }
         if (($pages - ($page + 2)) > 0) {
-            if ($page == $pages)
+            if ($page == $pages) {
                 $output .= "<li class=\"page-item active\"><a data-page=\"" . ($pages) . "\" class=\"page-link nlrsbook-page\" >" . $pages . "</a ></li > ";
-            else
+            } else {
                 $output .= "<li class=\"page-item \"><a data-page=\"" . ($pages) . "\" class=\"page-link nlrsbook-page\">" . $pages . "</a></li>";
+            }
         }
 
         if ($page < $pages) {
-            $output .= "<li class=\"page-item\"><a data-page=\"" . $page + 1 . "\" class=\"page-link nlrsbook-page\"><span>»</span></a></li>";
+            $output .= "<li class=\"page-item\"><a data-page=\"" . ($page + 1) . "\" class=\"page-link nlrsbook-page\" ><span>»</span></a></li>";
         } else {
-            $output .= "<li class=\"page-item disabled\"><span class=\"page-link nlrsbook-page\">»</span></li>";
+            $output .= "<li class=\"page-item disabled\"><span class=\"page-link nlrsbook-page\">«</span></li>";
         }
 
     }
@@ -96,4 +106,4 @@ function pagination($count, $first, $page)
     return $output;
 }
 
-echo json_encode(['page' => $page, 'remove' => $remove, 'html' => $content]);
+echo json_encode(['page' => $page, 'count' => $count, 'remove' => $signature, 'html' => $content]);
