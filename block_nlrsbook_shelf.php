@@ -20,13 +20,13 @@ class block_nlrsbook_shelf extends block_base {
         $seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
         $baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
 
-        // $shelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Fshelf";
-        // $ordersShelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnew.nlrs.ru%2Flk%2Forders-shelf";
-        // $ticketsUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Ftickets";
+        $shelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Fshelf";
+        $ordersShelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnew.nlrs.ru%2Flk%2Forders-shelf";
+        $ticketsUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Ftickets";
 
-        $shelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Fshelf";
-        $ordersShelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Forders-shelf";
-        $ticketsUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Ftickets";
+        // $shelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Fshelf";
+        // $ordersShelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Forders-shelf";
+        // $ticketsUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Ftickets";
 
         $this->content = new stdClass;
         $this->content->text .= "<style>" . $style . "</style>";
