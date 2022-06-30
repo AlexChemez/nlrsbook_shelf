@@ -37,7 +37,7 @@
     position: absolute;
     top: 0px;
     right: 0px;
-    padding: 0px 6px;
+    padding: 6px 6px;
     background: rgba(255,255,255,0.5);
 }
 .nlrsbook_shelf_card__dropdown::after {

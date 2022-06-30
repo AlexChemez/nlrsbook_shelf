@@ -14,7 +14,6 @@ class block_nlrsbook_shelf extends block_base {
 
         $style = file_get_contents($CFG->dirroot . "/blocks/nlrsbook_shelf/style/nlrsbook_shelf.css");
         $js = file_get_contents($CFG->dirroot . "/blocks/nlrsbook_shelf/js/nlrsbook_shelf.js");
-        $mainPage = file_get_contents($CFG->dirroot . "/blocks/nlrsbook_shelf/templates/rendermainpage.moustache");
 
         $nlrsUserId = 48059; // TODO: получать из токена
         $seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
@@ -27,11 +26,12 @@ class block_nlrsbook_shelf extends block_base {
         // $shelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Fshelf";
         // $ordersShelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Forders-shelf";
         // $ticketsUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Ftickets";
-
+        
         $this->content = new stdClass;
-        $this->content->text .= "<style>" . $style . "</style>";
-        $this->content->text .= "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js\"></script>";
-        $this->content->text .= <<<HTML
+
+        $this->content->text = <<<HTML
+            <style>{$style}</style>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
             <div>
                 <div class="mb-3">
                     <a href="{$shelfUrl}" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-sm mb-1">Моя полка</a>
@@ -42,8 +42,8 @@ class block_nlrsbook_shelf extends block_base {
                 <div class="nlrsbook_shelf_grid row" id="nlrsbook_shelf_list">
                 </div>
             </div>
-HTML;
-        $this->content->text .= "<script type=\"text/javascript\"> " . $js . " </script>";
+            <script type="text/javascript">{$js}</script>
+        HTML;
 
         return $this->content;
     }

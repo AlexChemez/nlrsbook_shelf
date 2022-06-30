@@ -14,7 +14,7 @@ $page = optional_param('page', 1, PARAM_INT); // get запрос на полу�
 $remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки
 
 $user_id = $USER->id; // Идентицикатор пользователя
-$public_key = get_config('nlrsbook_shelf', 'org_private_key'); // Приватный ключ организации
+$public_key = get_config('nlrsbook_auth', 'org_private_key'); // Приватный ключ организации
 $org_id = 1; // Идентификатор организации
 
 $getSignature = Query::generateServerApiRequestSignatureBase64($public_key, 2, $user_id); // получение подписи
@@ -24,12 +24,12 @@ $nlrsUserId = 48059; // TODO: получать из токена
 $seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
 $baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
 
+$removeBook = Query::removeBookToShelf($remove, $getToken);
+
 $getShelf = Query::getShelf($page, $first, $getToken); // получение полки пользователя
 
 $myShelfBooks = $getShelf['data'];
 $count = $getShelf['paginatorInfo']['total'];
-
-$removeBook = Query::removeBookToShelf($remove, $getToken);
 
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
@@ -106,4 +106,4 @@ function pagination($count, $first, $page)
     return $output;
 }
 
-echo json_encode(['page' => $page, 'count' => $count, 'remove' => $signature, 'html' => $content]);
+echo json_encode(['page' => $page, 'count' => $count, 'remove' => $remove, 'html' => $content]);
