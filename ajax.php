@@ -1,28 +1,40 @@
 <?php
 
 define('AJAX_SCRIPT', true);
-require_once('../../config.php');
 
-require_login();
+require(__DIR__ . '/../../config.php');
 
 require_once($CFG->dirroot . "/blocks/nlrsbook_auth/Query.php");
 
+require_login();
+
 use App\Querys\Query;
+
+global $USER;
 
 $first = 6; // Количество книг на страницу
 $page = optional_param('page', 1, PARAM_INT); // get запрос на получение номера страницы для пагинатора
-$remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки
+$remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки*/
 
-$user_id = $USER->id; // Идентицикатор пользователя
-$public_key = get_config('nlrsbook_auth', 'org_private_key'); // Приватный ключ организации
-$org_id = 1; // Идентификатор организации
+$seamlessAuthUserId = $USER->id; // Идентицикатор пользователя
+$seamlessAuthOrgId = 1; // Идентификатор организации
 
-$getSignature = Query::generateServerApiRequestSignatureBase64($public_key, 2, $user_id); // получение подписи
-$getToken = Query::getToken($user_id, $getSignature); // получение токена пользователя
+$secret = get_config('nlrsbook_auth', 'org_private_key'); // Секретный ключ организации
+$seamlessAuthSignature = Query::generateServerApiRequestSignature([
+    "orgId" => $seamlessAuthOrgId,
+    "userIdInEduPlatform" => $seamlessAuthUserId,
+], $secret);
 
-$nlrsUserId = 48059; // TODO: получать из токена
-$seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
-$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
+$getToken = Query::getToken($seamlessAuthUserId, $seamlessAuthSignature); // получение токена пользователя
+
+$nlrsUserId = Query::getSub($USER->id); // TODO: получать из токена
+
+$seamlessAuthSignatureBase64 = Query::generateServerApiRequestSignatureBase64([
+    "orgId" => $seamlessAuthOrgId,
+    "userIdInEduPlatform" => $nlrsUserId,
+], $secret);
+
+$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthOrgId=${seamlessAuthOrgId}&seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignatureBase64}";
 
 $removeBook = Query::removeBookToShelf($remove, $getToken);
 
@@ -106,4 +118,4 @@ function pagination($count, $first, $page)
     return $output;
 }
 
-echo json_encode(['page' => $page, 'count' => $count, 'remove' => $remove, 'html' => $content]);
+echo json_encode(['page' => $page, 'token' => $seamlessAuthSignatureBase64, 'count' => $count, 'remove' => $remove, 'html' => $content]);
