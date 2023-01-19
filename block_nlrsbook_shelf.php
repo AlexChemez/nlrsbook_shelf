@@ -1,5 +1,11 @@
 <?php
 
+require_once($CFG->dirroot . "/blocks/nlrsbook_auth/Query.php");
+
+require_login();
+
+use App\Querys\Query;
+
 class block_nlrsbook_shelf extends block_base {
 
     public function init() {
@@ -7,7 +13,7 @@ class block_nlrsbook_shelf extends block_base {
     }
 
     public function get_content() {
-        global $CFG;
+        global $CFG, $USER;
         if ($this->content !== null) {
             return $this->content;
         }
@@ -15,18 +21,29 @@ class block_nlrsbook_shelf extends block_base {
         $style = file_get_contents($CFG->dirroot . "/blocks/nlrsbook_shelf/style/nlrsbook_shelf.css");
         $js = file_get_contents($CFG->dirroot . "/blocks/nlrsbook_shelf/js/nlrsbook_shelf.js");
 
-        $nlrsUserId = 48059; // TODO: получать из токена
-        $seamlessAuthSignature = 'y3Mz2ahGpv7GMLGttHZ7PBTsfDaHtmPX'; // TODO: реализовать генерацию подписи, пока стоит временная заглушка
-        $baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignature}";
+        $seamlessAuthUserId = $USER->id; // Идентицикатор пользователя
+        $seamlessAuthOrgId = 1; // Идентификатор организации
+
+        $secret = get_config('nlrsbook_auth', 'org_private_key'); // Секретный ключ организации
+        $seamlessAuthSignature = Query::generateServerApiRequestSignature([
+            "orgId" => $seamlessAuthOrgId,
+            "userIdInEduPlatform" => $seamlessAuthUserId,
+        ], $secret);
+
+        $getToken = Query::getToken($seamlessAuthUserId, $seamlessAuthSignature); // TODO: получать из токена
+        $nlrsUserId = Query::getSub($seamlessAuthUserId); // TODO: получать из токена
+
+        $seamlessAuthSignatureBase64 = Query::generateServerApiRequestSignatureBase64([
+            "orgId" => $seamlessAuthOrgId,
+            "userIdInEduPlatform" => $nlrsUserId,
+        ], $secret);
+
+        $baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthOrgId=${seamlessAuthOrgId}&seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignatureBase64}";
 
         $shelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Fshelf";
         $ordersShelfUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnew.nlrs.ru%2Flk%2Forders-shelf";
         $ticketsUrl = "${baseUrl}&override_redirect=https%3A%2F%2Fnlrs.ru%2Flk%2Ftickets";
 
-        // $shelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Fshelf";
-        // $ordersShelfUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Forders-shelf";
-        // $ticketsUrl = "${baseUrl}&override_redirect=http%3A%2F%2Flocalhost:3000%2Flk%2Ftickets";
-        
         $this->content = new stdClass;
 
         $this->content->text = <<<HTML
