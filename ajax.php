@@ -16,36 +16,17 @@ $first = 6; // Количество книг на страницу
 $page = optional_param('page', 1, PARAM_INT); // get запрос на получение номера страницы для пагинатора
 $remove = optional_param('remove', null, PARAM_INT); // get запрос на получение идентификатора книги для удаления с полки*/
 
-$seamlessAuthUserId = $USER->id; // Идентицикатор пользователя
-$seamlessAuthOrgId = 1; // Идентификатор организации
+$removeBook = Query::removeBookToShelf($remove); // функия удаления книги с полки
 
-$secret = get_config('nlrsbook_auth', 'org_private_key'); // Секретный ключ организации
-$seamlessAuthSignature = Query::generateServerApiRequestSignature([
-    "orgId" => $seamlessAuthOrgId,
-    "userIdInEduPlatform" => $seamlessAuthUserId,
-], $secret);
+$token = Query::generateServerApiRequestSignature();
+$getShelf = Query::getShelf($page, $first); // получение полки пользователя
 
-$getToken = Query::getToken($seamlessAuthUserId, $seamlessAuthSignature); // получение токена пользователя
-
-$nlrsUserId = Query::getSub($USER->id); // TODO: получать из токена
-
-$seamlessAuthSignatureBase64 = Query::generateServerApiRequestSignatureBase64([
-    "orgId" => $seamlessAuthOrgId,
-    "userIdInEduPlatform" => $nlrsUserId,
-], $secret);
-
-$baseUrl = "https://e.nlrs.ru/seamless-auth-redirect?seamlessAuthOrgId=${seamlessAuthOrgId}&seamlessAuthUserId=${nlrsUserId}&seamlessAuthSignature=${seamlessAuthSignatureBase64}";
-
-$removeBook = Query::removeBookToShelf($remove, $getToken);
-
-$getShelf = Query::getShelf($page, $first, $getToken); // получение полки пользователя
-
-$myShelfBooks = $getShelf['data'];
-$count = $getShelf['paginatorInfo']['total'];
+$myShelfBooks = $getShelf['data']; // Подучение данных полки читателя
+$count = $getShelf['paginatorInfo']['total']; // Получение количества книг в полке читателя
 
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
-    $bookUrl = "${baseUrl}&override_redirect=/online2/".$book['id'];
+    $bookUrl = Query::getUrl("online2/".$book['id']);
     $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2">
                     <div class="nlrsbook_shelf_card__img_wrapper">
                         <div class="nlrsbook_shelf_card__img_responsive"></div>
@@ -55,7 +36,7 @@ foreach ($myShelfBooks as $key => $book) {
                         <ul class="dropdown-menu">
                             <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item">Убрать из полки</a></li>
                         </ul>
-                    </div>
+                    </div>'.$token.'
                     <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
                     <div class="nlrsbook_shelf_card__title mt-1">'.$book['title'].'</div>
                 </div>';
@@ -65,6 +46,7 @@ $content .= pagination($count, $first, $page);
     $content .= '<div class="col-12 col-sm-12 col-md-12"><div class="alert alert-info">В вашей полке нет книг</div></div>';
 }
 
+// Переключатель страниц
 function pagination($count, $first, $page)
 {
     $output .= "<div class=\"nlrsbook_shelf_pagination col-12\"><ul class=\"pagination pagination-sm\">";
@@ -84,7 +66,6 @@ function pagination($count, $first, $page)
         if (($page - 3) > 1) {
             $output .= "<li class=\"page-item disabled\"><span class=\"page-link nlrsbook-page\">...</span></li>";
         }
-
 
         for ($i = ($page - 2); $i <= ($page + 2); $i++) {
             if ($i < 1) continue;
