@@ -36,7 +36,7 @@ foreach ($myShelfBooks as $key => $book) {
                         <ul class="dropdown-menu">
                             <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item">Убрать из полки</a></li>
                         </ul>
-                    </div>'.$token.'
+                    </div>
                     <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
                     <div class="nlrsbook_shelf_card__title mt-1">'.$book['title'].'</div>
                 </div>';
