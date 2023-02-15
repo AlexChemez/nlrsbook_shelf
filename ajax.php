@@ -27,18 +27,22 @@ $count = $getShelf['paginatorInfo']['total']; // Получение количе
 if ($myShelfBooks) {
 foreach ($myShelfBooks as $key => $book) {
     $bookUrl = Query::getUrl("online2/".$book['id']);
-    $content .= '<div class="nlrsbook_shelf_card col-6 col-sm-4 col-md-2">
+    $content .= '<div class="nlrsbook_shelf_card">
                     <div class="nlrsbook_shelf_card__img_wrapper">
                         <div class="nlrsbook_shelf_card__img_responsive"></div>
                         <img src="'.$book['cover_thumb_url'].'" class="nlrsbook_shelf_card__img">
                         <div class="nlrsbook_shelf_card__dropdown dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
                         </div>
                         <ul class="dropdown-menu">
-                            <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item">Убрать из полки</a></li>
+                            <li><a data-remove="'.$book['id'].'" class="nlrsbook-remove dropdown-item"><i class="fa fa-trash mr-2" aria-hidden="true"></i>Убрать из полки</a></li>
                         </ul>
                     </div>
-                    <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm mt-2">Читать</a>
-                    <div class="nlrsbook_shelf_card__title mt-1">'.$book['title'].'</div>
+                    <div class="nlrsbook_shelf_card_wrapper">
+                        <div class="order_title">
+                            <a target="_blank" href="'.$bookUrl.'" target="_blank" class="nlrsbook_shelf_card__btn btn btn-primary btn-block btn-sm">Читать</a>
+                        </div>
+                        <div class="nlrsbook_shelf_card__title">'.$book['title'].'</div>
+                    </div>
                 </div>';
 }
 $content .= pagination($count, $first, $page);

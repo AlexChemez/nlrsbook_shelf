@@ -21,7 +21,7 @@ class block_nlrsbook_shelf extends block_base {
             <style>{$style}</style>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
             <div>
-                <div class="nlrsbook_shelf_grid row" id="nlrsbook_shelf_list">
+                <div class="nlrsbook_shelf_grid" id="nlrsbook_shelf_list">
                 </div>
             </div>
             <script type="text/javascript">{$js}</script>
