@@ -9,6 +9,7 @@ function send_request_nlrsbook(page = 1, remove) {
         if (data.count > 0) {
             $("#nlrsbook_shelf_count").html('('+data.count+')');
         }
+        console.log(data.token);
         $("#nlrsbook_shelf_list").html(data.html);
         $(".nlrsbook-page").unbind("click").click(function () {
             send_request_nlrsbook($(this).data('page'), null);

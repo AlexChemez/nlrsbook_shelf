@@ -103,7 +103,7 @@
     margin: 0px;
 }
 
-@container shelfgrid (width > 0px) and (width < 599px) {
+@container shelfgrid (width < 599px) {
     .nlrsbook_shelf_card {
         width: 100%;
         display: grid;
