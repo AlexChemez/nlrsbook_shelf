@@ -107,7 +107,7 @@
     .nlrsbook_shelf_card {
         width: 100%;
         display: grid;
-        grid-template-columns: 20% 1fr;
+        grid-template-columns: 25% 1fr;
     }
     .nlrsbook_shelf_card_wrapper {
         display: inline-flex;
@@ -129,7 +129,7 @@
         width: 100%;
     }
 }
-@container shelfgrid (width > 600px) and (width < 800px) {
+@container shelfgrid (width > 600px) and (width < 700px) {
   .nlrsbook_shelf_card {
     width: 33.33%;
     display: inline-block;
